@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Akka.Actor;
+using hygiea.web.Actors;
+using hygiea.web.Messages;
+using Microsoft.AspNetCore.Mvc;
 
 namespace hygiea.web.Controllers
 {
@@ -7,17 +9,19 @@ namespace hygiea.web.Controllers
     [Route("[controller]")]
     public class PreauthorizationController : ControllerBase
     {
-        private readonly ILogger<PreauthorizationController> _logger;
+        //private readonly ILogger<PreauthorizationController> _logger;
+        private readonly IActorRef _router;
 
-        public PreauthorizationController(ILogger<PreauthorizationController> logger)
+        public PreauthorizationController(ActorProvider actorProvider)
         {
-            _logger = logger;
+            _router = actorProvider.Router;
         }
 
         [HttpPost]
-        public IActionResult PostAuthorization()
+        public IActionResult PostAuthorization([FromBody] AuthMessage authrequest)
         {
-            return BadRequest();
+            _router.Tell(authrequest);
+            return Accepted(authrequest);
         }
     }
 }

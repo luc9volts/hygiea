@@ -1,3 +1,4 @@
+using hygiea.web.Actors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ namespace hygiea.web
         {
 
             services.AddControllers();
+            services.AddSingleton<ActorProvider, AkkaService>();
+            services.AddHostedService<AkkaService>(sp => (AkkaService)sp.GetRequiredService<ActorProvider>());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "hygiea.web", Version = "v1" });
@@ -37,12 +40,9 @@ namespace hygiea.web
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "hygiea.web v1"));
             }
 
-            app.UseHttpsRedirection();
-
+            //app.UseHttpsRedirection();
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
