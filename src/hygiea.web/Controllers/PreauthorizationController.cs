@@ -9,7 +9,6 @@ namespace hygiea.web.Controllers
     [Route("[controller]")]
     public class PreauthorizationController : ControllerBase
     {
-        //private readonly ILogger<PreauthorizationController> _logger;
         private readonly IActorRef _router;
 
         public PreauthorizationController(ActorProvider actorProvider)

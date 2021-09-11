@@ -13,15 +13,16 @@ namespace hygiea.web.Actors
         public BeneficiaryActor(IServiceProvider sp)
         {
             _scope = sp.CreateScope();
-
             Ready();
         }
+
+        protected override void PostStop() => _scope.Dispose();
 
         private void Ready()
         {
             Receive<AuthMessage>(auth =>
             {
-                var a=1;
+                var a = Context.Self.Path.ToString();
             });
         }
     }
