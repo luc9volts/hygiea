@@ -1,3 +1,5 @@
+using hygiea.data;
+using hygiea.domain;
 using hygiea.web.Actors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +24,7 @@ namespace hygiea.web
         {
 
             services.AddControllers();
+            services.AddSingleton<BeneficiaryRepository, BeneficiaryRepositoryMock>();
             services.AddSingleton<ActorProvider, AkkaService>();
             services.AddHostedService<AkkaService>(sp => (AkkaService)sp.GetRequiredService<ActorProvider>());
             services.AddSwaggerGen(c =>

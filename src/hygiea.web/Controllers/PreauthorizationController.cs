@@ -11,10 +11,7 @@ namespace hygiea.web.Controllers
     {
         private readonly IActorRef _router;
 
-        public PreauthorizationController(ActorProvider actorProvider)
-        {
-            _router = actorProvider.Router;
-        }
+        public PreauthorizationController(ActorProvider actorProvider) => _router = actorProvider.Router;
 
         [HttpPost]
         public IActionResult PostAuthorization([FromBody] AuthMessage authrequest)

@@ -2,9 +2,9 @@ using Akka.Routing;
 
 namespace hygiea.web.Messages
 {
-    public record AuthMessage(string BeneficiaryNumber, string ProcedureCode)
+    public record AuthMessage(int BeneficiaryId, string ProcedureCode)
     : IConsistentHashable
     {
-        public object ConsistentHashKey => BeneficiaryNumber;
+        public object ConsistentHashKey => BeneficiaryId;
     }
 }

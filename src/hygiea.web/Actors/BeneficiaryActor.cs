@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using Akka.Actor;
+using hygiea.domain;
 using hygiea.web.Messages;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,21 +11,27 @@ namespace hygiea.web.Actors
     {
         public IStash Stash { get; set; }
         private readonly IServiceScope _scope;
+        private readonly Beneficiary _thisBeneficiary;
 
         public BeneficiaryActor(IServiceProvider sp)
         {
             _scope = sp.CreateScope();
+            var beneficiaryId = int.Parse(Context.Self.Path.ToString().Split('/').Last());
+
+            _thisBeneficiary = _scope.ServiceProvider
+                                .GetRequiredService<BeneficiaryRepository>()
+                                .GetBy(beneficiaryId);
             Ready();
         }
-
-        protected override void PostStop() => _scope.Dispose();
 
         private void Ready()
         {
             Receive<AuthMessage>(auth =>
             {
-                var a = Context.Self.Path.ToString();
+                var a = _thisBeneficiary.Name;
             });
         }
+
+        protected override void PostStop() => _scope.Dispose();
     }
 }
