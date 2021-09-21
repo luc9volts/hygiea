@@ -24,8 +24,7 @@ namespace hygiea.web
 
             _actorSystem = ActorSystem.Create("HygieaSystem", actorSystemSetup);
 
-            var props = DependencyResolver.For(_actorSystem)
-                                        .Props<SpecificActorRouter<BeneficiaryActor>>();
+            var props = DependencyResolver.For(_actorSystem).Props<ActorRouter>();
 
             this.Router = _actorSystem.ActorOf(props, "beneficiary-pool");
 

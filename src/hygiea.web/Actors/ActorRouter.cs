@@ -1,14 +1,14 @@
 using Akka.Actor;
 using Akka.DependencyInjection;
-using Akka.Routing;
+using hygiea.web.Messages;
 
 namespace hygiea.web.Actors
 {
-    public class SpecificActorRouter<T> : ReceiveActor where T : ActorBase
+    public class ActorRouter : ReceiveActor
     {
         private readonly DependencyResolver _props;
 
-        public SpecificActorRouter()
+        public ActorRouter()
         {
             _props = DependencyResolver.For(Context.System);
             Ready();
@@ -16,13 +16,18 @@ namespace hygiea.web.Actors
 
         private void Ready()
         {
-            Receive<IConsistentHashable>(msg =>
+            Receive<ServiceRequest>(msg =>
             {
-                GetChildActor(msg.ConsistentHashKey.ToString()).Forward(msg);
+                GetChildActor<BeneficiaryActor>(msg.ConsistentHashKey.ToString()).Tell(msg);
+            });
+
+            Receive<Claim>(msg =>
+            {
+                GetChildActor<ClaimActor>(msg.ConsistentHashKey.ToString()).Forward(msg);
             });
         }
 
-        private IActorRef GetChildActor(string actorName)
+        private IActorRef GetChildActor<T>(string actorName) where T : ActorBase
         {
             var child = Context.Child(actorName);
 

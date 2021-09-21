@@ -15,23 +15,30 @@ namespace hygiea.web.Actors
 
         public BeneficiaryActor(IServiceProvider sp)
         {
-            _scope = sp.CreateScope();
             var beneficiaryId = int.Parse(Context.Self.Path.ToString().Split('/').Last());
-
+            _scope = sp.CreateScope();
             _thisBeneficiary = _scope.ServiceProvider
                                 .GetRequiredService<BeneficiaryRepository>()
                                 .GetBy(beneficiaryId);
             Ready();
         }
 
+        protected override void PostStop() => _scope.Dispose();
+
         private void Ready()
         {
-            Receive<AuthMessage>(auth =>
+            Receive<ServiceRequest>(msg =>
             {
-                var a = _thisBeneficiary.Name;
+                if (Approved(msg.ServiceCode))
+                    Sender.Tell(new Claim(msg.ServiceCode, msg.ProviderCode));
+                else
+                {
+                    //notificar recusado
+                }
             });
         }
 
-        protected override void PostStop() => _scope.Dispose();
+        private bool Approved(string procedureCode) => _thisBeneficiary.CoveredProcedures.Contains(procedureCode);
+
     }
 }

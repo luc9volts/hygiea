@@ -1,8 +1,9 @@
+using Akka.Actor;
 using Akka.Routing;
 
 namespace hygiea.web.Messages
 {
-    public record AuthMessage(int BeneficiaryId, string ProcedureCode)
+    public record ServiceRequest(int BeneficiaryId, string ServiceCode, string ProviderCode, IActorRef Router)
     : IConsistentHashable
     {
         public object ConsistentHashKey => BeneficiaryId;
