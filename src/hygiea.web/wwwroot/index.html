@@ -2,42 +2,73 @@
 <meta charset="utf-8">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<link rel="shortcut icon" href="#">
 
 <html lang="en">
 
 <body>
-    <div class="container my-3">
+
+    <div id="container-items" class="container my-3">
         <div class="row border my-1">
             <div class="col border text-center">
-                BENEDITO
+                Cliente: BENEDITO
             </div>
             <div class="col border text-center">
-                BENEVIDES
+                Cliente: BENEVIDES
             </div>
             <div class="col border text-center">
-                BEN-HUR
+                Cliente: BEN-HUR
+            </div>
+            <div class="col border text-center">
+                PEGS
             </div>
         </div>
         <div class="row border my-1">
-            <div class="col border"> Atendimento </div>
-            <div class="col border"> PEG </div>
-            <div class="col border"> Atendimento </div>
-            <div class="col border"> PEG </div>
-            <div class="col border"> Atendimento </div>
-            <div class="col border"> PEG </div>
+            <ul class="col border">
+                <li :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 1)">
+                    {{ item.message }}
+                </li>
+            </ul>
+            <ul class="col border">
+                <li :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 2)">
+                    {{ item.message }}
+                </li>
+            </ul>
+            <ul class="col border">
+                <li :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 3)">
+                    {{ item.message }}
+                </li>
+            </ul>
+            <ul class="col border">
+                <li v-for="item in items.filter(i => i.id)">
+                    {{ item.message }}
+                </li>
+            </ul>
         </div>
     </div>
 
     <script src="https://unpkg.com/vue@3.2.20"></script>
     <script src="js/signalr/dist/browser/signalr.js"></script>
     <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    items: [{ message: 'Foo' }, { message: 'Bar' }]
+                }
+            },
+            methods: {
+                addMessage(data) {
+                    this.items.push(data)
+                }
+            }
+        }).mount('#container-items');
 
         //connect with server via signalr
         const connection = new signalR.HubConnectionBuilder().withUrl("/Hubs/notificationHub").build();
         connection.start().then(() => console.log("connected")).catch(err => console.error(err.toString()));
 
-        connection.on("ReceiveServiceRequest", info => alert(info.message));
-        connection.on("ReceiveClaim", info => alert(info.message));
+        connection.on("ReceiveServiceRequest", info => app.addMessage(info));
+        connection.on("ReceiveClaim", info => app.addMessage(info));
 
     </script>
 </body>
