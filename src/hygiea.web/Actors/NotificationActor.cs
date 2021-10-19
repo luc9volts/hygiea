@@ -28,7 +28,7 @@ namespace hygiea.web.Actors
                 _hub.Clients.All.SendAsync("ReceiveClaim", msg);
             });
 
-            Receive<RefusedServiceRequest>(msg =>
+            Receive<ServiceRequestStatus>(msg =>
             {
                 _hub.Clients.All.SendAsync("ReceiveServiceRequest", msg);
             });
