@@ -30,10 +30,10 @@ namespace hygiea.web.Actors
             Receive<ServiceRequest>(msg =>
             {
                 if (Approved(msg.ServiceCode))
-                    Sender.Tell(new ClaimRequest(msg.ServiceCode, msg.ProviderCode));
+                    Context.Parent.Tell(new ClaimRequest(msg.ServiceCode, msg.ProviderCode));
                 else
                 {
-                    Sender.Tell(new RefusedServiceRequest(msg.BeneficiaryId, msg.ServiceCode, msg.ProviderCode));
+                    Context.Parent.Tell(new RefusedServiceRequest(msg.BeneficiaryId, msg.ServiceCode, msg.ProviderCode));
                 }
             });
         }

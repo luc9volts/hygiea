@@ -17,7 +17,7 @@ namespace hygiea.web.Actors
         {
             _scope = sp.CreateScope();
             _hub = _scope.ServiceProvider.GetRequiredService<IHubContext<NotificationHub>>();
-
+            
             Ready();
         }
 
@@ -25,12 +25,12 @@ namespace hygiea.web.Actors
         {
             Receive<Claim>(msg =>
             {
-                //_hub.Clients.All.SendAsync("ReceiveTxnInfo", msg);
+                _hub.Clients.All.SendAsync("ReceiveClaim", msg);
             });
 
             Receive<RefusedServiceRequest>(msg =>
             {
-                _hub.Clients.All.SendAsync("ReceiveInfo", msg);
+                _hub.Clients.All.SendAsync("ReceiveServiceRequest", msg);
             });
         }
 

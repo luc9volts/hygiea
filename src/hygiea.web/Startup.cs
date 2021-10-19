@@ -27,6 +27,7 @@ namespace hygiea.web
             services.AddControllers();
             services.AddSignalR();
             services.AddSingleton<BeneficiaryRepository, BeneficiaryRepositoryMock>();
+            services.AddSingleton<HealthServiceRepository, HealthServiceRepositoryMock>();            
             services.AddSingleton<ActorProvider, AkkaService>();
             services.AddHostedService<AkkaService>(sp => (AkkaService)sp.GetRequiredService<ActorProvider>());
             services.AddSwaggerGen(c =>

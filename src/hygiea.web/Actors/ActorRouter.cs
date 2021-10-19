@@ -25,12 +25,12 @@ namespace hygiea.web.Actors
 
             Receive<ClaimRequest>(msg =>
             {
-                GetChildActor<ClaimActor>(msg.ConsistentHashKey.ToString()).Forward(msg);
+                GetChildActor<ClaimActor>(msg.ConsistentHashKey.ToString()).Tell(msg);
             });
 
             Receive<Notification>(msg =>
             {
-                _notificationActor.Tell(msg);
+                _notificationActor.Forward(msg);
             });
         }
 

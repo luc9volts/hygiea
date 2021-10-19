@@ -7,41 +7,44 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace hygiea.web.Actors
 {
-    public class ClaimActor : ReceiveActor, IWithUnboundedStash
+    public class ClaimActor : ReceiveActor, IWithTimers
     {
-        public IStash Stash { get; set; }
+        public ITimerScheduler Timers { get; set; }
         private readonly IServiceScope _scope;
         private readonly HealthServiceRepository _healthServiceRep;
-        private decimal _claimValue;
+        private (decimal Sum, int Count) _claimData;
 
         public ClaimActor(IServiceProvider sp)
         {
             _scope = sp.CreateScope();
-            _healthServiceRep = _scope.ServiceProvider
-                                .GetRequiredService<HealthServiceRepository>();
+            _healthServiceRep = _scope.ServiceProvider.GetRequiredService<HealthServiceRepository>();
 
+            SetActorTimeout();
             Ready();
         }
 
         private void Ready()
         {
-            SetActorTimeout();
-
             Receive<ClaimRequest>(claimRequest =>
             {
                 var healthService = _healthServiceRep.GetBy(claimRequest.ServiceCode);
-                _claimValue += healthService.Price;
+                _claimData.Sum += healthService.Price;
+                _claimData.Count++;
             });
 
-            Receive<ReceiveTimeout>(timeout =>
-            {
-                var claimRequestId = Context.Self.Path.ToString().Split('/').Last();
-                Sender.Tell(new Claim(claimRequestId, _claimValue));
-                Context.Stop(Self);
-            });
+            Receive<string>(claimRequestId => Context.Parent.Tell(new Claim(claimRequestId, _claimData)));
+
+            Receive<ReceiveTimeout>(_ => Context.Stop(Self));
         }
 
-        private void SetActorTimeout() => Context.SetReceiveTimeout(TimeSpan.FromSeconds(60 - DateTime.Now.Second));
+        private void SetActorTimeout() => Context.SetReceiveTimeout(TimeSpan.FromMinutes(2));
+
+        protected override void PreStart()
+        {
+            var claimRequestId = Context.Self.Path.ToString().Split('/').Last();
+            Timers.StartSingleTimer("Notification", claimRequestId, TimeSpan.FromSeconds(60 - DateTime.Now.Second));
+            base.PreStart();
+        }
 
         protected override void PostStop() => _scope.Dispose();
     }

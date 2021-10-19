@@ -36,7 +36,8 @@
         const connection = new signalR.HubConnectionBuilder().withUrl("/Hubs/notificationHub").build();
         connection.start().then(() => console.log("connected")).catch(err => console.error(err.toString()));
 
-        connection.on("ReceiveInfo", info => alert(info.message));
+        connection.on("ReceiveServiceRequest", info => alert(info.message));
+        connection.on("ReceiveClaim", info => alert(info.message));
 
     </script>
 </body>
