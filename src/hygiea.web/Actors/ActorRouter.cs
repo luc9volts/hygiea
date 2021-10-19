@@ -7,10 +7,12 @@ namespace hygiea.web.Actors
     public class ActorRouter : ReceiveActor
     {
         private readonly DependencyResolver _props;
+        private readonly IActorRef _notificationActor;
 
         public ActorRouter()
         {
             _props = DependencyResolver.For(Context.System);
+            _notificationActor = Context.ActorOf(_props.Props<NotificationActor>(), "NotifyBrowsers");
             Ready();
         }
 
@@ -21,9 +23,14 @@ namespace hygiea.web.Actors
                 GetChildActor<BeneficiaryActor>(msg.ConsistentHashKey.ToString()).Tell(msg);
             });
 
-            Receive<Claim>(msg =>
+            Receive<ClaimRequest>(msg =>
             {
                 GetChildActor<ClaimActor>(msg.ConsistentHashKey.ToString()).Forward(msg);
+            });
+
+            Receive<Notification>(msg =>
+            {
+                _notificationActor.Tell(msg);
             });
         }
 

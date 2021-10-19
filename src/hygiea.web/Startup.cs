@@ -1,6 +1,7 @@
 using hygiea.data;
 using hygiea.domain;
 using hygiea.web.Actors;
+using hygiea.web.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ namespace hygiea.web
         {
 
             services.AddControllers();
+            services.AddSignalR();
             services.AddSingleton<BeneficiaryRepository, BeneficiaryRepositoryMock>();
             services.AddSingleton<ActorProvider, AkkaService>();
             services.AddHostedService<AkkaService>(sp => (AkkaService)sp.GetRequiredService<ActorProvider>());
@@ -43,12 +45,14 @@ namespace hygiea.web
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "hygiea.web v1"));
             }
 
-            //app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            //pp.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<NotificationHub>("/Hubs/notificationHub");
             });
         }
     }

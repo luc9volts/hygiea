@@ -30,15 +30,14 @@ namespace hygiea.web.Actors
             Receive<ServiceRequest>(msg =>
             {
                 if (Approved(msg.ServiceCode))
-                    Sender.Tell(new Claim(msg.ServiceCode, msg.ProviderCode));
+                    Sender.Tell(new ClaimRequest(msg.ServiceCode, msg.ProviderCode));
                 else
                 {
-                    //notificar recusado
+                    Sender.Tell(new RefusedServiceRequest(msg.BeneficiaryId, msg.ServiceCode, msg.ProviderCode));
                 }
             });
         }
 
         private bool Approved(string procedureCode) => _thisBeneficiary.CoveredProcedures.Contains(procedureCode);
-
     }
 }
