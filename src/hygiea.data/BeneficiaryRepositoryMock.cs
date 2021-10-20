@@ -15,19 +15,19 @@ namespace hygiea.data
                 {
                     Id = 1,
                     Name = "BENEDITO",
-                    CoveredProcedures = new List<string>() { "P001", "P002", "P003" }
+                    CoveredProcedures = new List<string>() { "S001", "S002", "S003" }
                 },
                 [2] = new Beneficiary
                 {
                     Id = 2,
                     Name = "BENEVIDES",
-                    CoveredProcedures = new List<string>() { "P004", "P005", "P006" }
+                    CoveredProcedures = new List<string>() { "S004", "S005", "S006" }
                 },
                 [3] = new Beneficiary
                 {
                     Id = 3,
                     Name = "BEN-HUR",
-                    CoveredProcedures = new List<string>() { "P007", "P008", "P009" }
+                    CoveredProcedures = new List<string>() { "S007", "S008", "S009" }
                 }
             };
         }

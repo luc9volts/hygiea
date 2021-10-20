@@ -24,26 +24,26 @@
             </div>
         </div>
         <div class="row border my-1">
-            <ul class="col border">
-                <li :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 1)">
-                    {{ item.message }}
-                </li>
-            </ul>
-            <ul class="col border">
-                <li :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 2)">
-                    {{ item.message }}
-                </li>
-            </ul>
-            <ul class="col border">
-                <li :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 3)">
-                    {{ item.message }}
-                </li>
-            </ul>
-            <ul class="col border">
-                <li v-for="item in items.filter(i => i.id)">
-                    {{ item.message }}
-                </li>
-            </ul>
+            <div class="col border" style="height: 500px; overflow-y: scroll;">
+                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 1)" :key="item.serviceCode">
+                    Serviço: {{ item.serviceCode }} Provedor: {{ item.providerCode }}
+                </div>
+            </div>
+            <div class="col border" style="height: 500px; overflow-y: scroll;">
+                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 2)" :key="item.serviceCode">
+                    Serviço: {{ item.serviceCode }} Provedor: {{ item.providerCode }}
+                </div>
+            </div>
+            <div class="col border" style="height: 500px; overflow-y: scroll;">
+                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 3)" :key="item.serviceCode">
+                    Serviço: {{ item.serviceCode }} Provedor: {{ item.providerCode }}
+                </div>
+            </div>
+            <div class="col border" style="height: 500px; overflow-y: scroll;">
+                <div v-for="item in items.filter(i => i.id)">
+                    Provedor:{{ item.id }} Qtd:{{ item.quantity }} Valor:{{ item.value}}
+                </div>
+            </div>
         </div>
     </div>
 

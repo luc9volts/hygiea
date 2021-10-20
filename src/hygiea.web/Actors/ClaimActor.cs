@@ -30,7 +30,7 @@ namespace hygiea.web.Actors
         {
             Receive<ClaimRequest>(claimRequest =>
             {
-                var healthService = _healthServiceRep.GetBy(claimRequest.ServiceCode);
+                var healthService = _healthServiceRep.GetBy(claimRequest.ProviderCode);
                 _claimData.Sum += healthService.Price;
                 _claimData.Count++;
             });
@@ -38,7 +38,7 @@ namespace hygiea.web.Actors
             Receive<ReceiveTimeout>(_ =>
             {
                 var claimRequestId = Context.Self.Path.ToString().Split('/').Last();
-                Context.Parent.Tell(new Claim(claimRequestId, _claimData));
+                Context.Parent.Tell(new Claim(claimRequestId, _claimData.Count, _claimData.Sum));
                 Context.Stop(Self);
             });
         }
