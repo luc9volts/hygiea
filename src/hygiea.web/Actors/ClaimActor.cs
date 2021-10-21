@@ -7,11 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace hygiea.web.Actors
 {
-    public class ClaimActor : ReceiveActor
+    public class ClaimActor : ReceiveActor, IWithTimers
     {
         private readonly IServiceScope _scope;
         private readonly HealthServiceRepository _healthServiceRep;
         private (decimal Sum, int Count) _claimData;
+        public ITimerScheduler Timers { get; set; }
 
         public ClaimActor(IServiceProvider sp)
         {
@@ -22,9 +23,18 @@ namespace hygiea.web.Actors
             Ready();
         }
 
+        protected override void PreStart()
+        {
+            var claimRequestId = Context.Self.Path.ToString().Split('/').Last();
+            var intervalToNextClaim = TimeSpan.FromSeconds(60 - DateTime.Now.Second);
+
+            Timers.StartSingleTimer("Notificator", claimRequestId, intervalToNextClaim);
+            //base.PreStart();
+        }
+
         protected override void PostStop() => _scope.Dispose();
 
-        private void SetActorTimeout() => Context.SetReceiveTimeout(TimeSpan.FromSeconds(60 - DateTime.Now.Second));
+        private void SetActorTimeout() => Context.SetReceiveTimeout(TimeSpan.FromMinutes(2));
 
         private void Ready()
         {
@@ -35,12 +45,12 @@ namespace hygiea.web.Actors
                 _claimData.Count++;
             });
 
-            Receive<ReceiveTimeout>(_ =>
+            Receive<string>(claimRequestId =>
             {
-                var claimRequestId = Context.Self.Path.ToString().Split('/').Last();
                 Context.Parent.Tell(new Claim(claimRequestId, _claimData.Count, _claimData.Sum));
-                Context.Stop(Self);
             });
+
+            Receive<ReceiveTimeout>(_ => Context.Stop(Self));
         }
     }
 }

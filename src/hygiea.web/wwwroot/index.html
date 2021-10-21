@@ -4,44 +4,55 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <link rel="shortcut icon" href="#">
 
+<style>
+    div.col.border {
+        height: 500px;
+        overflow-y: scroll;
+        position: relative;
+        bottom: 0;
+    }
+</style>
+
 <html lang="en">
 
 <body>
-
     <div id="container-items" class="container my-3">
         <div class="row border my-1">
-            <div class="col border text-center">
+            <h5 class="col border text-center">
                 Cliente: BENEDITO
-            </div>
-            <div class="col border text-center">
+            </h5>
+            <h5 class="col border text-center">
                 Cliente: BENEVIDES
-            </div>
-            <div class="col border text-center">
+            </h5>
+            <h5 class="col border text-center">
                 Cliente: BEN-HUR
-            </div>
-            <div class="col border text-center">
+            </h5>
+            <h5 class="col border text-center">
                 PEGS
-            </div>
+            </h5>
         </div>
         <div class="row border my-1">
-            <div class="col border" style="height: 500px; overflow-y: scroll;">
-                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 1)" :key="item.serviceCode">
+            <div class="col border">
+                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]"
+                    v-for="item in items.filter(i => i.beneficiaryId == 1).slice().reverse()" :key="item.serviceCode">
                     Serviço: {{ item.serviceCode }} Provedor: {{ item.providerCode }}
                 </div>
             </div>
-            <div class="col border" style="height: 500px; overflow-y: scroll;">
-                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 2)" :key="item.serviceCode">
+            <div class="col border">
+                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]"
+                    v-for="item in items.filter(i => i.beneficiaryId == 2).slice().reverse()" :key="item.serviceCode">
                     Serviço: {{ item.serviceCode }} Provedor: {{ item.providerCode }}
                 </div>
             </div>
-            <div class="col border" style="height: 500px; overflow-y: scroll;">
-                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]" v-for="item in items.filter(i => i.beneficiaryId == 3)" :key="item.serviceCode">
+            <div class="col border">
+                <div :style="[item.approved ? {'color': 'black'} : {'color': 'red'}]"
+                    v-for="item in items.filter(i => i.beneficiaryId == 3).slice().reverse()" :key="item.serviceCode">
                     Serviço: {{ item.serviceCode }} Provedor: {{ item.providerCode }}
                 </div>
             </div>
-            <div class="col border" style="height: 500px; overflow-y: scroll;">
-                <div v-for="item in items.filter(i => i.id)">
-                    Provedor:{{ item.id }} Qtd:{{ item.quantity }} Valor:{{ item.value}}
+            <div class="col border">
+                <div v-for="item in items.filter(i => i.id).slice().reverse()" :key="item.id">
+                    {{ item.id }} Qtd: {{ item.quantity }} Valor: {{ item.value}}
                 </div>
             </div>
         </div>
@@ -53,7 +64,7 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    items: [{ message: 'Foo' }, { message: 'Bar' }]
+                    items: []
                 }
             },
             methods: {
@@ -69,7 +80,6 @@
 
         connection.on("ReceiveServiceRequest", info => app.addMessage(info));
         connection.on("ReceiveClaim", info => app.addMessage(info));
-
     </script>
 </body>
 
