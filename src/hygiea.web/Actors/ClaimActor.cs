@@ -19,7 +19,6 @@ namespace hygiea.web.Actors
             _scope = sp.CreateScope();
             _healthServiceRep = _scope.ServiceProvider.GetRequiredService<HealthServiceRepository>();
 
-            SetActorTimeout();
             Ready();
         }
 
@@ -29,12 +28,10 @@ namespace hygiea.web.Actors
             var intervalToNextClaim = TimeSpan.FromSeconds(60 - DateTime.Now.Second);
 
             Timers.StartSingleTimer("Notificator", claimRequestId, intervalToNextClaim);
-            //base.PreStart();
+            base.PreStart();
         }
 
         protected override void PostStop() => _scope.Dispose();
-
-        private void SetActorTimeout() => Context.SetReceiveTimeout(TimeSpan.FromMinutes(2));
 
         private void Ready()
         {
@@ -48,9 +45,8 @@ namespace hygiea.web.Actors
             Receive<string>(claimRequestId =>
             {
                 Context.Parent.Tell(new Claim(claimRequestId, _claimData.Count, _claimData.Sum));
+                Context.Stop(Self);
             });
-
-            Receive<ReceiveTimeout>(_ => Context.Stop(Self));
         }
     }
 }

@@ -30,7 +30,7 @@ namespace hygiea.web.Actors
 
             Receive<Notification>(msg =>
             {
-                _notificationActor.Forward(msg);
+                _notificationActor.Tell(msg);
             });
         }
 
