@@ -28,6 +28,12 @@ namespace hygiea.data
                     Id = 3,
                     Name = "BEN-HUR",
                     CoveredProcedures = new List<string>() { "S007", "S008", "S009" }
+                },
+                [4] = new Beneficiary
+                {
+                    Id = 4,
+                    Name = "Teste",
+                    CoveredProcedures = new List<string>() { "S010", "S011", "S012" }
                 }
             };
         }
